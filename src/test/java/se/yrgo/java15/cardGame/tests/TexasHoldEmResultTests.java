@@ -67,7 +67,7 @@ public class TexasHoldEmResultTests {
 	@Test(dataProvider = "trippleProvider")
 	public void testGivesCorrectResultsOnTripples(List<Card> cards, int value) {
 		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
-		Assert.assertEquals(calc.getResults().size(), 2);
+		Assert.assertEquals(calc.getResults().size(), 3);
 		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.THREE_OF_A_KIND);
 		Assert.assertEquals(calc.getBestResult().getValue(), value);
 	}
@@ -95,7 +95,7 @@ public class TexasHoldEmResultTests {
 	@Test(dataProvider = "FourOfAKindProvider")
 	public void testGivesCorrectResultsOnFourOfAKind(List<Card> cards, int value) {
 		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
-		Assert.assertEquals(calc.getResults().size(), 3);
+		Assert.assertEquals(calc.getResults().size(), 5);
 		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.FOUR_OF_A_KIND);
 	}
 
@@ -109,7 +109,7 @@ public class TexasHoldEmResultTests {
 		cards.add(new Card(SUITE.SPADES, VALUE.FIVE));
 
 		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
-		Assert.assertEquals(calc.getResults().size(), 4);
+		Assert.assertEquals(calc.getResults().size(), 5);
 		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.FULL_HOUSE);
 	}
 
@@ -127,7 +127,7 @@ public class TexasHoldEmResultTests {
 		Assert.assertEquals(calc.getBestResult().getValue(), 25);
 	}
 
-	@Test(singleThreaded = true)
+	@Test
 	public void testFindProvidedStraight_aceLow() {
 		ArrayList<Card> cards = new ArrayList<Card>();
 		cards.add(new Card(SUITE.CLUBS, VALUE.TWO));
@@ -135,6 +135,8 @@ public class TexasHoldEmResultTests {
 		cards.add(new Card(SUITE.CLUBS, VALUE.THREE));
 		cards.add(new Card(SUITE.DIAMONDS, VALUE.FOUR));
 		cards.add(new Card(SUITE.HEARTS, VALUE.FIVE));
+		cards.add(new Card(SUITE.CLUBS, VALUE.SEVEN));
+		cards.add(new Card(SUITE.CLUBS, VALUE.EIGHT));
 
 		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
 		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.STRAIGHT);
@@ -142,13 +144,32 @@ public class TexasHoldEmResultTests {
 	}
 
 	@Test
+	public void testFindProvidedStraight_aceLowButHigherCardAvailable() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(SUITE.CLUBS, VALUE.TWO));
+		cards.add(new Card(SUITE.SPADES, VALUE.ACE));
+		cards.add(new Card(SUITE.CLUBS, VALUE.THREE));
+		cards.add(new Card(SUITE.DIAMONDS, VALUE.FOUR));
+		cards.add(new Card(SUITE.HEARTS, VALUE.FIVE));
+		cards.add(new Card(SUITE.CLUBS, VALUE.SIX));
+		cards.add(new Card(SUITE.CLUBS, VALUE.EIGHT));
+
+		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
+		System.out.println(calc.getBestResult());
+		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.STRAIGHT);
+		Assert.assertEquals(calc.getBestResult().getValue(), 20);
+	}
+
+	@Test
 	public void testFindProvidedStraight_aceHigh() {
 		ArrayList<Card> cards = new ArrayList<Card>();
 		cards.add(new Card(SUITE.CLUBS, VALUE.TEN));
 		cards.add(new Card(SUITE.DIAMONDS, VALUE.JACK));
-		cards.add(new Card(SUITE.HEARTS, VALUE.QUEEEN));
+		cards.add(new Card(SUITE.HEARTS, VALUE.QUEEN));
 		cards.add(new Card(SUITE.CLUBS, VALUE.KING));
 		cards.add(new Card(SUITE.SPADES, VALUE.ACE));
+		cards.add(new Card(SUITE.CLUBS, VALUE.NINE));
+		cards.add(new Card(SUITE.DIAMONDS, VALUE.EIGHT));
 
 		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
 		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.STRAIGHT);
@@ -174,12 +195,61 @@ public class TexasHoldEmResultTests {
 		ArrayList<Card> cards = new ArrayList<Card>();
 		cards.add(new Card(SUITE.CLUBS, VALUE.TEN));
 		cards.add(new Card(SUITE.CLUBS, VALUE.JACK));
-		cards.add(new Card(SUITE.CLUBS, VALUE.QUEEEN));
+		cards.add(new Card(SUITE.CLUBS, VALUE.QUEEN));
 		cards.add(new Card(SUITE.CLUBS, VALUE.KING));
 		cards.add(new Card(SUITE.CLUBS, VALUE.ACE));
 
 		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
 		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.ROYAL_FLUSH);
 		Assert.assertEquals(calc.getBestResult().getValue(), 60);
+	}
+
+
+	@Test
+	public void testFindProvidedRoyalFlushWithAllCardsAvailable_aceHigh() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(SUITE.CLUBS, VALUE.EIGHT));
+		cards.add(new Card(SUITE.CLUBS, VALUE.NINE));
+		cards.add(new Card(SUITE.CLUBS, VALUE.TEN));
+		cards.add(new Card(SUITE.CLUBS, VALUE.JACK));
+		cards.add(new Card(SUITE.CLUBS, VALUE.QUEEN));
+		cards.add(new Card(SUITE.CLUBS, VALUE.KING));
+		cards.add(new Card(SUITE.CLUBS, VALUE.ACE));
+
+		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
+		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.ROYAL_FLUSH);
+		Assert.assertEquals(calc.getBestResult().getValue(), 60);
+	}
+
+	@Test
+	public void testFindBestTwoPair() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(SUITE.CLUBS, VALUE.EIGHT));
+		cards.add(new Card(SUITE.DIAMONDS, VALUE.EIGHT));
+		cards.add(new Card(SUITE.CLUBS, VALUE.TEN));
+		cards.add(new Card(SUITE.DIAMONDS, VALUE.TEN));
+		cards.add(new Card(SUITE.CLUBS, VALUE.JACK));
+		cards.add(new Card(SUITE.SPADES, VALUE.KING));
+		cards.add(new Card(SUITE.CLUBS, VALUE.KING));
+
+		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
+		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.TWO_PAIR);
+		Assert.assertEquals(calc.getBestResult().getValue(), 46);
+	}
+
+	@Test
+	public void testFindHighestHand() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(SUITE.CLUBS, VALUE.EIGHT));
+		cards.add(new Card(SUITE.DIAMONDS, VALUE.TWO));
+		cards.add(new Card(SUITE.CLUBS, VALUE.TEN));
+		cards.add(new Card(SUITE.DIAMONDS, VALUE.SEVEN));
+		cards.add(new Card(SUITE.CLUBS, VALUE.JACK));
+		cards.add(new Card(SUITE.SPADES, VALUE.KING));
+		cards.add(new Card(SUITE.CLUBS, VALUE.QUEEN));
+
+		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
+		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.HIGH_CARD);
+		Assert.assertEquals(calc.getBestResult().getValue(), 54);
 	}
 }
