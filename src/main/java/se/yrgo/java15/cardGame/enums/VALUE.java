@@ -11,7 +11,7 @@ public enum VALUE {
 	NINE(9,9),
 	TEN(10,10),
 	JACK(11,10),
-	QUEEEN(12,10),
+	QUEEN(12,10),
 	KING(13,10),
 	ACE(14,1);
 

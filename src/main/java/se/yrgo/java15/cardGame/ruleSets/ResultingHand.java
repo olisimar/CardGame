@@ -56,7 +56,17 @@ public class ResultingHand {
 		return value;
 	}
 
-	public void setValue() {
+	public void setValue(int value) {
+		this.value = value;
+	}
 
+	@Override
+	public String toString() {
+		String toReturn = "\n|-------------";
+		toReturn += "\n|  Hand: "+ this.hand;
+		toReturn += "\n| Value: "+ this.value;
+		toReturn += "\n| Cards: "+ this.cards;
+		toReturn += "\n|-------------";
+		return toReturn;
 	}
 }
