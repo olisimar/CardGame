@@ -78,7 +78,6 @@ public class TexasHoldEmCalculator {
 		}
 
 		if(flush.size() >= 5) {
-			List<Card> fixes = this.findStraight(flush);
 			if(this.findStraight(flush).size() >= 5) {
 				int combValue = 0;
 				ArrayList<Card> result = new ArrayList<Card>();
