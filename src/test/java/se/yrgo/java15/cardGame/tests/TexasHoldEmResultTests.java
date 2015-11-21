@@ -182,4 +182,20 @@ public class TexasHoldEmResultTests {
 		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.ROYAL_FLUSH);
 		Assert.assertEquals(calc.getBestResult().getValue(), 60);
 	}
+	
+	@Test
+	public void testFindBestStraight_sevenCards() {
+		ArrayList<Card> cards = new ArrayList<Card>();
+		cards.add(new Card(SUITE.CLUBS, VALUE.EIGHT));
+		cards.add(new Card(SUITE.CLUBS, VALUE.NINE));
+		cards.add(new Card(SUITE.CLUBS, VALUE.TEN));
+		cards.add(new Card(SUITE.CLUBS, VALUE.JACK));
+		cards.add(new Card(SUITE.CLUBS, VALUE.QUEEEN));
+		cards.add(new Card(SUITE.CLUBS, VALUE.KING));
+		cards.add(new Card(SUITE.CLUBS, VALUE.ACE));
+
+		TexasHoldEmCalculator calc = new TexasHoldEmCalculator(cards);
+		Assert.assertEquals(calc.getBestResult().getHand(), TEXAS_HOLDEM_RANKED_RESULT.ROYAL_FLUSH);
+		Assert.assertEquals(calc.getBestResult().getValue(), 60);
+	}
 }
